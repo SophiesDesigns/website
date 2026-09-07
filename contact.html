@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Sets and Stories</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg:          #1C0D07;
+            --cream:       #E0CEAB;
+            --cream-dim:   rgba(224, 206, 171, 0.45);
+            --gold-line:   rgba(182, 132, 58, 0.32);
+            --glow-auburn: rgba(165, 72, 18, 0.14);
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            background: var(--bg);
+            font-family: 'Noto Serif Display', serif;
+            font-weight: 100;
+            color: var(--cream);
+            cursor: default;
+        }
+
+        /* ── ANIMATED BACKGROUND SLIDESHOW ──────────────── */
+        .bg-slideshow {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .bg-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            opacity: 0;
+            filter: brightness(0.34) saturate(0.55) sepia(0.28);
+            transform: scale(1);
+            animation: bgSlide 35s infinite;
+        }
+
+        @keyframes bgSlide {
+            0%   { opacity: 0;   transform: scale(1); }
+            5%   { opacity: 0.65; }
+            18%  { opacity: 0.65; }
+            23%  { opacity: 0;   transform: scale(1.09); }
+            100% { opacity: 0;   transform: scale(1.09); }
+        }
+
+        /* Dark vignette + wash so the slideshow never fights the content */
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 90% 70% at 50% 38%, var(--glow-auburn) 0%, transparent 65%),
+                linear-gradient(to bottom, rgba(28,13,7,0.78) 0%, rgba(28,13,7,0.55) 30%, rgba(28,13,7,0.62) 70%, rgba(28,13,7,0.88) 100%);
+        }
+
+        /* ── HEADER ─────────────────────────────────────── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 200;
+            padding: 1.8rem 2.8rem;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(
+                to bottom,
+                rgba(28, 13, 7, 0.9) 0%,
+                rgba(28, 13, 7, 0.55) 60%,
+                rgba(28, 13, 7, 0)   100%
+            );
+        }
+
+        .logo {
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo img {
+            height: 2.8rem;
+            width: auto;
+            display: block;
+        }
+
+        .logo:hover { opacity: 0.55; }
+
+        /* ── MAIN LAYOUT ────────────────────────────────── */
+        main {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 9rem 1.6rem 5rem;
+            gap: 3.4rem;
+        }
+
+        /* ── HERO TEXT ──────────────────────────────────── */
+        .hero-text {
+            text-align: center;
+            max-width: 720px;
+            animation: riseIn 1.1s cubic-bezier(0.76, 0, 0.17, 1) both;
+        }
+
+        .tagline {
+            font-family: 'Noto Serif Display', serif;
+            font-weight: 100;
+            font-size: clamp(1.15rem, 2.4vw, 2rem);
+            letter-spacing: 0.01em;
+            color: var(--cream);
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .services {
+            margin-top: 1.5rem;
+            font-size: clamp(0.72rem, 1.2vw, 0.92rem);
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--cream-dim);
+        }
+
+        .worldwide-row {
+            margin-top: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.9rem;
+        }
+
+        .worldwide-row .line {
+            width: 34px;
+            height: 1px;
+            background: var(--gold-line);
+        }
+
+        .worldwide {
+            font-size: 0.72rem;
+            letter-spacing: 0.34em;
+            text-transform: uppercase;
+            color: var(--cream-dim);
+        }
+
+        /* ── CONTACT CARD ───────────────────────────────── */
+        .contact-card {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            background: rgba(28, 13, 7, 0.58);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--gold-line);
+            padding: 3rem 3rem 2.6rem;
+            animation: riseIn 1.1s cubic-bezier(0.76, 0, 0.17, 1) 0.15s both;
+        }
+
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── FORM ───────────────────────────────────────── */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.7rem;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        .field label {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--cream-dim);
+        }
+
+        .field input,
+        .field textarea {
+            font-family: 'Noto Serif Display', serif;
+            font-weight: 100;
+            font-size: 1rem;
+            color: var(--cream);
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--gold-line);
+            padding: 0.4rem 0.1rem 0.6rem;
+            outline: none;
+            transition: border-color 0.35s ease;
+            resize: none;
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: rgba(224, 206, 171, 0.28);
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            border-bottom-color: var(--cream);
+        }
+
+        .submit-btn {
+            margin-top: 0.6rem;
+            align-self: center;
+            position: relative;
+            background: none;
+            border: 1px solid var(--gold-line);
+            padding: 0.85rem 2.6rem;
+            font-family: 'Noto Serif Display', serif;
+            font-weight: 100;
+            font-size: 0.8rem;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: var(--cream);
+            cursor: pointer;
+            transition: border-color 0.4s ease, background 0.4s ease, color 0.4s ease, opacity 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            border-color: var(--cream);
+            background: rgba(224, 206, 171, 0.08);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        .form-status {
+            text-align: center;
+            font-size: 0.85rem;
+            letter-spacing: 0.02em;
+            color: var(--cream-dim);
+            min-height: 1.2em;
+        }
+
+        .form-status.success { color: var(--cream); }
+        .form-status.error   { color: #c98a6a; }
+
+        /* ── DIVIDER "or" ───────────────────────────────── */
+        .divider-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2.4rem 0 1.8rem;
+        }
+
+        .divider-row .line {
+            flex: 1;
+            height: 1px;
+            background: var(--gold-line);
+        }
+
+        .divider-row span:not(.line) {
+            font-size: 0.7rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--cream-dim);
+        }
+
+        /* ── DIRECT CONTACT ─────────────────────────────── */
+        .direct-contact {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.3rem;
+        }
+
+        .mailto-link,
+        .insta-link {
+            position: relative;
+            text-decoration: none;
+            font-size: 0.92rem;
+            letter-spacing: 0.06em;
+            color: var(--cream);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .mailto-link::after,
+        .insta-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--cream);
+            transition: width 0.45s ease;
+        }
+
+        .mailto-link:hover::after,
+        .insta-link:hover::after { width: 100%; }
+
+        .insta-link svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            header { padding: 1.4rem 1.4rem; }
+            main { padding: 7.5rem 1rem 3.5rem; gap: 2.4rem; }
+            .contact-card { padding: 2.4rem 1.7rem 2.2rem; }
+            .tagline { font-size: clamp(0.78rem, 5.2vw, 1.15rem); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated background slideshow -->
+    <div class="bg-slideshow">
+        <img class="bg-slide" style="animation-delay: 0s"  src="content/contact/contact-1.jpeg" alt="">
+        <img class="bg-slide" style="animation-delay: 7s"  src="content/contact/contact-2.jpeg" alt="">
+        <img class="bg-slide" style="animation-delay: 14s" src="content/contact/contact-3.jpeg" alt="">
+        <img class="bg-slide" style="animation-delay: 21s" src="content/contact/contact-4.jpeg" alt="">
+        <img class="bg-slide" style="animation-delay: 28s" src="content/contact/contact-5.jpeg" alt="">
+    </div>
+    <div class="bg-overlay"></div>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="content/logo.png" alt="Sets and Stories">
+        </a>
+    </header>
+
+    <main>
+        <div class="hero-text">
+            <p class="tagline">Contact for elevated environments</p>
+            <p class="services">Fashion&nbsp;|&nbsp;Film&nbsp;|&nbsp;Interiors&nbsp;|&nbsp;Editorials&nbsp;|&nbsp;Events</p>
+            <div class="worldwide-row">
+                <span class="line"></span>
+                <span class="worldwide">Worldwide</span>
+                <span class="line"></span>
+            </div>
+        </div>
+
+        <div class="contact-card">
+            <form class="contact-form" id="contact-form">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="field">
+                    <label for="project">Project Type</label>
+                    <input type="text" id="project" name="project" placeholder="Fashion, Film, Interiors, Editorial, Event…">
+                </div>
+                <div class="field">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
+
+                <!-- Honeypot -->
+                <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+                <button type="submit" class="submit-btn" id="submit-btn">Send Inquiry</button>
+                <p class="form-status" id="form-status"></p>
+            </form>
+
+            <div class="divider-row">
+                <span class="line"></span>
+                <span>Or reach us directly</span>
+                <span class="line"></span>
+            </div>
+
+            <div class="direct-contact">
+                <a href="mailto:contact@setsandstories.net" class="mailto-link">
+                    contact@setsandstories.net
+                </a>
+                <a href="https://www.instagram.com/setsandstories/" target="_blank" rel="noopener noreferrer" class="insta-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                        <rect x="2.5" y="2.5" width="19" height="19" rx="5"/>
+                        <circle cx="12" cy="12" r="4.6"/>
+                        <circle cx="17.4" cy="6.6" r="1.05" fill="currentColor" stroke="none"/>
+                    </svg>
+                    @setsandstories
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const form = document.getElementById('contact-form');
+        const statusEl = document.getElementById('form-status');
+        const submitBtn = document.getElementById('submit-btn');
+        const CONTACT_EMAIL = 'contact@setsandstories.net';
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Honeypot check
+            if (form._honey.value) return;
+
+            const data = {
+                name: form.name.value,
+                email: form.email.value,
+                project: form.project.value,
+                message: form.message.value,
+                _subject: 'New inquiry — Sets and Stories website',
+                _captcha: 'false',
+                _template: 'table'
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending…';
+            statusEl.textContent = '';
+            statusEl.className = 'form-status';
+
+            try {
+                const res = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!res.ok) throw new Error('Request failed');
+
+                form.reset();
+                statusEl.textContent = 'Thank you — your message has been sent. We’ll be in touch shortly.';
+                statusEl.classList.add('success');
+                submitBtn.textContent = 'Send Inquiry';
+                submitBtn.disabled = false;
+            } catch (err) {
+                statusEl.textContent = `Something went wrong. Please email us directly at ${CONTACT_EMAIL}.`;
+                statusEl.classList.add('error');
+                submitBtn.textContent = 'Send Inquiry';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>
